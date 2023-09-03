@@ -3,9 +3,9 @@
 This is a Node.js script that calculates the disk usage of directories in the current directory.
 
 ## Installation
-
-1. Make sure you have [Node.js](https://nodejs.org) installed on your machine.
-2. Clone or download this repository.
+```
+npm i -g @suntree/disk-usage
+```
 
 ## Usage
 

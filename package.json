@@ -1,5 +1,5 @@
 {
-  "name": "disk-usage",
+  "name": "@suntree/disk-usage",
   "version": "1.0.0",
   "description": "当然！以下是一个适合的 README.md 文件示例，用于说明如何使用你的脚本：",
   "main": "index.js",
@@ -9,9 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "shixin",
+  "author": "suntree",
   "license": "ISC",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   }
 }

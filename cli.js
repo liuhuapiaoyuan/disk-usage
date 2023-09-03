@@ -3,22 +3,29 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 function calculateDirectorySize(directory) {
-  let totalSize = 0;
+  try {
+    let totalSize = 0;
 
-  const files = fs.readdirSync(directory);
+    const files = fs.readdirSync(directory);
 
-  for (const file of files) {
-    const filePath = path.join(directory, file);
-    const stats = fs.statSync(filePath);
-
-    if (stats.isDirectory()) {
-      totalSize += calculateDirectorySize(filePath);
-    } else if (stats.isFile()) {
-      totalSize += stats.size;
+    for (const file of files) {
+      const filePath = path.join(directory, file);
+      const stats = fs.statSync(filePath);
+      if (stats.isSymbolicLink()) {
+        break;
+      }
+      if (stats.isDirectory()) {
+        totalSize += calculateDirectorySize(filePath);
+      } else if (stats.isFile()) {
+        totalSize += stats.size;
+      }
     }
-  }
 
-  return totalSize;
+    return totalSize;
+  } catch (error) {
+    console.log(`${directory}: 计算失败：${error.message}`)
+    return 0
+  }
 }
 
 function formatSize(size) {
@@ -34,19 +41,36 @@ function formatSize(size) {
 }
 
 function listDirectorySizes(directory) {
-  const subDirectories = fs.readdirSync(directory);
+  let totalSize = 0
+  try {
 
-  for (const subDirectory of subDirectories) {
-    const subDirectoryPath = path.join(directory, subDirectory);
-    const stats = fs.statSync(subDirectoryPath);
+    const subDirectories = fs.readdirSync(directory);
 
-    if (stats.isDirectory()) {
-      const size = calculateDirectorySize(subDirectoryPath);
-      console.log(`${subDirectoryPath}: ${formatSize(size)}`);
+    for (const subDirectory of subDirectories) {
+      const subDirectoryPath = path.join(directory, subDirectory);
+      try {
+        const stats = fs.statSync(subDirectoryPath);
+
+        // 排查link的目录
+        if (stats.isDirectory() && !stats.isSymbolicLink()) {
+
+          const size = calculateDirectorySize(subDirectoryPath);
+          totalSize += size
+          console.log(`${subDirectoryPath}: ${formatSize(size)}`);
+        }
+      } catch (error) {
+        console.log(`${subDirectoryPath}: 计算失败：${error.message}`);
+      }
     }
+    console.log("-------------------------------------")
+    console.log(`${directory}: ${formatSize(totalSize)}`);
+
+  } catch (error) {
+    console.log(`${directory}: 计算失败：${error.message}`);
   }
+
 }
 
 // 使用方法：在命令行中运行 `node script.js 目录路径`
 const directoryPath = process.argv[2];
-listDirectorySizes(directoryPath);
+listDirectorySizes(path.resolve(directoryPath));

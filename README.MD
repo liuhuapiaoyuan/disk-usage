@@ -1,6 +1,3 @@
-当然！以下是一个适合的 README.md 文件示例，用于说明如何使用你的脚本：
-
-```markdown
 # Directory Size Calculator
 
 This is a Node.js script that calculates the disk usage of directories in the current directory.
@@ -41,5 +38,4 @@ disk-usage js my-folder
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
  
